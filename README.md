@@ -1,2 +1,2 @@
 # Apriori-Algorithm
-Implementation start
+Implementation from scratch
