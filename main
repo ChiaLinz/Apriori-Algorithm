@@ -1,0 +1,266 @@
+
+
+import random
+import csv
+import numpy as np
+import pandas as pd
+from collections import Counter
+from itertools import combinations
+
+
+
+def transcation(itemlist,seed):
+    l = []
+    np.random.seed(seed)
+    for i in range(20):
+        n = int(random.uniform(1, 10))
+        t = np.random.choice(itemlist, n, replace=False, p = None)
+        l.append(t)
+    return l
+
+def get_itemset(data):
+    l = []
+
+    for transaction_list in data:
+        for t in transaction_list:
+            t = frozenset([t])
+            if t not in l:
+                l.append(t)
+    return l
+
+def transform_str_to_int(i):
+    return int(i.split()[0])
+
+
+item_Amazon = ["A Beginner?ôs Guide", "Java: The Complete Reference", "Java For Dummies", 
+               "Android Programming: The Big Nerd Ranch", "Head First Java 2nd Edition", "Beginning Programming with Java",
+               "Pocket Guide","C++ Programming in Easy Steps", "Effective Java (2nd Edition)",
+               "HTML and CSS: Design and Build Websites"]
+item_BestBuy = ["Digital Camera", "Lab Top", "Desk Top", "Printer", "Flash Drive", "Microsoft Office", "Speakers", 
+                "Lab Top Case", "Anti-Virus", "External HardDrive"]
+item_Kmart = ["Quilts", "Bedspreads", "Decorative Pillows", "Bed Skirts", "Sheets", "Shams", "Bedding Collections",
+              "Kids Bedding", "Embroidered", "Bedspread","Towels"]
+item_Nike = ["Running Shoe", "Soccer Shoe", "Socks", "Swimming Shirt", "Dry Fit V-Nick", "Rash Guard", "Sweatshirts",
+             "Hoodies", "Tech Pants", "Modern Pants"]
+item_Amazon2 = ["Cable Management Tray", "Wireless Charger", "Laundry Basket", "Headphone Stand", "Electric Skateboard",
+                "Gaming Monitor", "Gaming Mouse", "Case for iPhone", "Comforter Set", "Bedside Table Lamp"]
+
+
+
+
+trans1 = transcation(item_Amazon, 10)
+trans2 = transcation(item_BestBuy, 20)
+trans3 = transcation(item_Kmart, 30)
+trans4 = transcation(item_Nike, 40)
+trans5 = transcation(item_Amazon2, 50)
+
+
+df1 = pd.DataFrame(trans1)
+df2 = pd.DataFrame(trans2)
+df3 = pd.DataFrame(trans3)
+df4 = pd.DataFrame(trans4)
+df5 = pd.DataFrame(trans5)
+
+
+
+
+df1.to_csv("Transcation1.csv", index = False, header = False)
+df2.to_csv("Transcation2.csv", index = False, header = False)
+df3.to_csv("Transcation3.csv", index = False, header = False)
+df4.to_csv("Transcation4.csv", index = False, header = False)
+df5.to_csv("Transcation5.csv", index = False, header = False)
+
+
+
+
+support = 0
+while support not in (1,100):
+
+    support = input("Please enter the support value scale 1 to 100 : ")
+    if 1 <= float(support) <= 100:
+        confidence = input("Please enter the comfidence value scale 1 to 100 : ")
+        if 1 <= float(confidence) <= 100:
+            support_value = round(float(support) * 0.01 * 20)
+            confidence_value = (float(confidence) * 0.01)
+            print("\n" "Here are your minimum support number and confidence: " +  
+                  "\n" "Minimum support number: " + str(support_value) +
+                  "\n" "Confidence: " + str(round(confidence_value * 100, 2)) + "%")
+            break
+        else:
+            print("\n" "Please enter the number between 1 to 100")
+    else:
+        print("\n" "Please enter the number between 1 to 100")
+
+
+
+
+
+chosedata = 0
+file = []
+print("Please enter the number 1 to 6 to choose the dataset")
+while chosedata not in (1,5):
+    chosedata = input(" 1: Amazon, 2: BestBuy, 3: Kmart, 4: Nike, 5: Amazon2, 6: Custom data :  ")
+    if chosedata == "1":
+        table = pd.read_csv("Transcation1.csv", header= None)
+        df = trans1
+        item_list = item_Amazon
+        print("\n" "You choose the dataset: Amazon")
+        break
+    elif chosedata == "2":
+        table = pd.read_csv("Transcation2.csv", header= None)
+        df = trans2
+        item_list = item_BestBuy
+        print("\n" "You choose the dataset: BestBut")
+        break
+    elif chosedata == "3":
+        table = pd.read_csv("Transcation3.csv", header= None)
+        df = trans3
+        item_list = item_Kmart
+        print("\n" "You choose the dataset: Kmart")
+        break
+    elif chosedata == "4":
+        table = pd.read_csv("Transcation4.csv", header= None)
+        df = trans4
+        item_list = item_Nike
+        print("\n" "You choose the dataset: Nike")
+        break
+    elif chosedata == "5":
+        table = pd.read_csv("Transcation5.csv", header= None)
+        df = trans5
+        item_list = item_Amazon2
+        print("\n" "You choose the dataset: Amazon2")
+        break
+    elif chosedata == "6":
+        file = input("Please enter the file name (including the filename extension) : ")
+        table = pd.read_csv(file, header = None)
+        df = table.values.tolist()
+         # Use forzenset to get the itemset, list to remove forzenset, and sum to put them in one list.
+        item_list = sum([list(x) for x in get_itemset(df)],[])  
+        item_list = [x for x in item_list if str(x) != 'nan']  # Delete the nan in the list
+        break
+    else:
+        print("\n" "Please select the number 1 to 6")
+table
+
+
+
+
+
+c = Counter()
+l = Counter()
+c1_list = []
+l1_list = []
+print("\nBase on the minimum support = ",support_value,"\n")
+for i in item_list:
+    for d in df:
+        if(i in d):
+            c[i]+=1
+print("C1 :\n")
+for i in c:
+    c1_list.append( str(c[i]) + "  :  " + i)
+    c1_list.sort(key = transform_str_to_int, reverse = True)
+for i in c1_list:
+    print(str(i)," ")
+    
+for i in c:
+    if(c[i] >= support_value):
+        l[frozenset([i])]+= c[i]
+
+print("\nL1 :\n")
+for i in l:
+    l1_list.append( str(l[i]) + "  :  " + str(list(i)))
+    l1_list.sort(key = transform_str_to_int, reverse = True)
+
+for i in l1_list:
+    print(str(i)," ")
+
+
+times_item = 1
+for count in range (2,len(item_list)):
+    Cn_list = []
+    Ln_list = []
+    nc = set()
+    temp = list(l)
+    for i in range(0,len(temp)):
+        for j in range(i+1,len(temp)):
+            t = temp[i].union(temp[j])
+            if(len(t) == count):
+                nc.add(temp[i].union(temp[j]))
+    nc = list(nc)
+    c = Counter()
+    for i in nc:
+        c[i] = 0
+        for q in df:
+            temp = set(q)
+            if(i.issubset(temp)):
+                c[i]+=1
+    print("\nC"+str(count)+" :\n")
+    for i in c:
+        Cn_list.append( str(c[i]) + "  :  " + str(list(i)))
+        Cn_list.sort(key = transform_str_to_int, reverse = True)
+    for i in Cn_list:
+        print(str(i)," ")
+
+    l = Counter()
+    for i in c:
+        if(c[i] >= support_value):
+            l[i]+=c[i]
+    print("\nL"+str(count)+" : \n")
+    for i in l:
+        Ln_list.append( str(l[i]) + "  :  " + str(list(i)))
+        Ln_list.sort(key = transform_str_to_int, reverse = True)
+    for i in Ln_list:
+        print(str(i)," ")
+
+    if(len(l) == 0):
+        break
+    item_combination_list = l
+    times_item = count
+    Final_Ln_list = []
+print("Final item combination: \n")
+print("L"+str(times_item)+" : \n")
+for i in item_combination_list:
+        Final_Ln_list.append( str(item_combination_list[i]) + "  :  " + str(list(i)))
+        Final_Ln_list.sort(key = transform_str_to_int, reverse = True)
+for i in Final_Ln_list:
+    print(str(i)," ")
+
+
+
+
+
+print("\nBase on the confidence = " + str(confidence_value*100) + "%\n" + "\nThe Final Association Rules are:\n\n")
+for l in item_combination_list:
+    for q in combinations(l, len(l)-1):
+        combination = [frozenset(q)]
+
+        for A in combination:
+            B = l-A
+            AB = l
+            sup_AB = 0
+            sup_A = 0
+            sup_B = 0
+            for q in df:
+                temp = set(q)
+                if(A.issubset(temp)):
+                    sup_A+=1
+                if(B.issubset(temp)):
+                    sup_B+=1
+                if(AB.issubset(temp)):
+                    sup_AB+=1
+        Con_list = []            
+        if(len(A) <= 1):
+            Con_list.append(str(list(A)) + " -> "+str(list(B))+" = " + str(round(sup_AB / sup_A * 100, 2)))
+            
+        else:
+            if(sup_AB / sup_A > confidence_value and sup_AB / sup_B > confidence_value):
+                Con_list.append(str(list(A)) + " -> " + str(list(B)) + " = " + str(round(sup_AB / sup_A * 100, 2)))
+                Con_list.append(str(list(B)) + " -> " + str(list(A)) + " = " + str(round(sup_AB / sup_B * 100, 2)))
+                
+            elif(sup_AB / sup_A > confidence_value and sup_AB / sup_B < confidence_value):           
+                Con_list.append(str(list(A)) + " -> " + str(list(B)) + " = " + str(round(sup_AB / sup_A * 100, 2)))
+                
+        for i in Con_list:
+            print(str(i), "%\n")
+        
+
