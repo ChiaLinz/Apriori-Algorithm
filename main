@@ -9,7 +9,7 @@ from itertools import combinations
 
 
 
-def transcation(itemlist,seed):
+def transaction(itemlist,seed):
     l = []
     np.random.seed(seed)
     for i in range(20):
@@ -48,11 +48,11 @@ item_Amazon2 = ["Cable Management Tray", "Wireless Charger", "Laundry Basket", "
 
 
 
-trans1 = transcation(item_Amazon, 10)
-trans2 = transcation(item_BestBuy, 20)
-trans3 = transcation(item_Kmart, 30)
-trans4 = transcation(item_Nike, 40)
-trans5 = transcation(item_Amazon2, 50)
+trans1 = transaction(item_Amazon, 10)
+trans2 = transaction(item_BestBuy, 20)
+trans3 = transaction(item_Kmart, 30)
+trans4 = transaction(item_Nike, 40)
+trans5 = transaction(item_Amazon2, 50)
 
 
 df1 = pd.DataFrame(trans1)
@@ -64,11 +64,11 @@ df5 = pd.DataFrame(trans5)
 
 
 
-df1.to_csv("Transcation1.csv", index = False, header = False)
-df2.to_csv("Transcation2.csv", index = False, header = False)
-df3.to_csv("Transcation3.csv", index = False, header = False)
-df4.to_csv("Transcation4.csv", index = False, header = False)
-df5.to_csv("Transcation5.csv", index = False, header = False)
+df1.to_csv("Transaction1.csv", index = False, header = False)
+df2.to_csv("Transaction2.csv", index = False, header = False)
+df3.to_csv("Transaction3.csv", index = False, header = False)
+df4.to_csv("Transaction4.csv", index = False, header = False)
+df5.to_csv("Transaction5.csv", index = False, header = False)
 
 
 
@@ -101,31 +101,31 @@ print("Please enter the number 1 to 6 to choose the dataset")
 while chosedata not in (1,5):
     chosedata = input(" 1: Amazon, 2: BestBuy, 3: Kmart, 4: Nike, 5: Amazon2, 6: Custom data :  ")
     if chosedata == "1":
-        table = pd.read_csv("Transcation1.csv", header= None)
+        table = pd.read_csv("Transaction1.csv", header= None)
         df = trans1
         item_list = item_Amazon
         print("\n" "You choose the dataset: Amazon")
         break
     elif chosedata == "2":
-        table = pd.read_csv("Transcation2.csv", header= None)
+        table = pd.read_csv("Transaction2.csv", header= None)
         df = trans2
         item_list = item_BestBuy
         print("\n" "You choose the dataset: BestBut")
         break
     elif chosedata == "3":
-        table = pd.read_csv("Transcation3.csv", header= None)
+        table = pd.read_csv("Transaction3.csv", header= None)
         df = trans3
         item_list = item_Kmart
         print("\n" "You choose the dataset: Kmart")
         break
     elif chosedata == "4":
-        table = pd.read_csv("Transcation4.csv", header= None)
+        table = pd.read_csv("Transaction4.csv", header= None)
         df = trans4
         item_list = item_Nike
         print("\n" "You choose the dataset: Nike")
         break
     elif chosedata == "5":
-        table = pd.read_csv("Transcation5.csv", header= None)
+        table = pd.read_csv("Transaction5.csv", header= None)
         df = trans5
         item_list = item_Amazon2
         print("\n" "You choose the dataset: Amazon2")
